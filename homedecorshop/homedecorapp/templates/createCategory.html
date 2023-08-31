@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Decor</title>
+    <!-- Add Bootstrap CSS link -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+</head>
+<body>
+<div class="container mt-4">
+    <h2 class="mb-4 text-center">
+        {% if form.instance.pk %}
+            Edit Category
+        {% else %}
+            Create Category
+        {% endif %}
+    </h2>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="mb-3 row justify-content-center">
+            <label for="{{ form.name.id_for_label }}" class="col-md-3 col-form-label">Category Name:</label>
+            <div class="col-md-6">
+                {{ form.name }}
+            </div>
+        </div>
+        <div class="mb-3 row justify-content-center">
+            <label for="{{ form.image.id_for_label }}" class="col-md-3 col-form-label">Category Image:</label>
+            <div class="col-md-6">
+                {{ form.image }}
+            </div>
+        </div>
+        <div class="text-center">
+            <button type="submit" class="btn btn-primary">
+                {% if form.instance.pk %}
+                    Save Changes
+                {% else %}
+                    Create Category
+                {% endif %}
+            </button>
+            <a href="{% url 'index' %}" class="btn btn-secondary ml-2">Back to Home</a>
+        </div>
+    </form>
+    {% if form.instance.image %}
+        <div class="mt-4">
+            <h4>Current Image:</h4>
+            <img src="{{ form.instance.image.url }}" alt="Category Image" class="img-fluid">
+
+            <p>Image URL: {{ form.instance.image.url }}</p>
+        </div>
+    {% endif %}
+</div>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+</body>
+</html>

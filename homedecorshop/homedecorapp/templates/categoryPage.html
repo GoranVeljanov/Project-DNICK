@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home Decor</title>
+    <!-- Add Bootstrap CSS link -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amaranth&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
+          integrity="sha512-z3gLpd7yknf1YoNbCzqRKc4qyor8gaKU1qmn+CShxbuBusANI9QpRohGBreCFkKxLhei6S9CQXFEbbKuqLg0DA=="
+          crossorigin="anonymous" referrerpolicy="no-referrer"/>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-4bw+/aepP/YC94hEpVNVgiZdgIC5+VKNBQNGCHeKRQN+PtmoHDEXuppvnDJzQIu9" crossorigin="anonymous">
+    <style>
+         body {
+         background-color: #f5f5f5;
+         }
+         .navbar {
+         background-color: #333;
+         }
+         .hero-section {
+         position: relative;
+         height: 500px;
+         background-size: cover;
+         background-position: center;
+         }
+         .brand:before {
+         color: #f0cc2d;
+         content: 'HOME';
+         font-weight: bold;
+         }
+         .card-brand:before {
+         color: #f0cc2d;
+         content: 'HOME';
+         font-weight: bold;
+         }
+         * {
+         font-family: Amaranth;
+         }
+         .categories .card-body {
+         padding: 0; !importnat
+         }
+         .ratings{
+         margin-right:10px;
+         }
+         .ratings i{
+         color:#f0cc2d;
+         font-size:15px;
+         }
+         .rating-color{
+         color:#fbc634 !important;
+         }
+         .review-count{
+         font-weight:100;
+         margin-bottom:1px;
+         font-size:16px !important;
+         }
+         .small-ratings i{
+         color:#cecece;
+         }
+         .review-stat{
+         font-weight:100;
+         font-size:18px;
+         margin-bottom:2px;
+         }
+
+    </style>
+</head>
+<body>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand text-uppercase brand" href="{% url 'index' %}"> Decor</a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+                <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex">
+                    <li class="nav-item active">
+                        <a class="nav-link" href="{% url 'index' %}">Home</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Services</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#">Contact</a>
+                    </li>
+                </ul>
+            </div>
+            <ul class="navbar-nav flex-row ml-md-auto d-none d-md-flex justify-content-end">
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                     <span class="nav-link text-white">
+                     {% if user.is_authenticated and user.is_staff %}
+                     <i class="fa-solid fa-user-plus text-whites"></i> {{ user.username }}
+                     {% else %}
+                     <i class="fa-solid fa-user text-white"></i> {{ user.username }}
+                     {% endif %}
+                     </span>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'logout' %}"><i
+                            class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                </li>
+                {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'user_login' %}">Sign in</a>
+                </li>
+                {% endif %}
+                {% if user.is_authenticated %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'cart' %}">Cart
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+</header>
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            {% if user.is_authenticated and user.is_staff %}
+            <a href="{% url 'add_product_to_category' category.id %}" class="btn btn-primary mb-3">Add Product to
+                Category</a>
+            {% endif %}
+
+            <h2 class="mb-4">{{ category.name }}</h2>
+            <div class="col-md-3">
+                <div class="d-flex flex-column align-items-stretch flex-shrink-0 bg-white" style="width: 200px;">
+                     <span
+                             class="d-flex align-items-center flex-shrink-0 p-2 link-dark text-decoration-none border-bottom">
+                        <svg class="bi me-2" width="30" height="24">
+                           <use xlink:href="#bootstrap"></use>
+                        </svg>
+                        <h5>Categories</h5>
+                     </span>
+                    <div class="list-group list-group-flush border-bottom scrollarea">
+                        <ul class="list-group">
+                            {% for other_category in all_categories %}
+                            <li class="list-group-item">
+                                <a href="{% url 'category_page' other_category.id %}"
+                                   class="list-group-item list-group-item-action {% if other_category.id == category.id %}active text-white{% endif %} py-2 lh-tight text-dark">{{ other_category.name }}</a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="col-md-9">
+            <div class="container mt-4">
+                <form method="get">
+                    <div class="justify-content-between mb-3 d-inline">
+                        <div class="form-group">
+                            <label for="price-sort">Sort by Price:</label>
+                            <select class="form-control d-inline" id="price-sort" name="price_sort" style="width: 50%">
+                                <option value="min">Min Price</option>
+                                <option value="max">Max Price</option>
+                            </select>
+                            <div class="form-group d-inline">
+                            <button type="submit" class="btn btn-secondary">Apply</button>
+                        </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <br>
+            <p>{{ category.products.all|length }} products available</p>
+            <div class="row">
+                {% for product in products %}
+                <div class="col-md-4 mb-4">
+                    {% if user.is_authenticated and user.is_staff %}
+                    <form method="post" action="{% url 'delete_product' product.id product.category.id %}"
+                          class="d-inline">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fa-regular fa-circle-xmark"></i>
+                        </button>
+                    </form>
+                    {% endif %}
+                    <div class="card" style="height: 34rem;">
+                        <a href="{% url 'product_page' product.id %}">
+                            <img src="{{ product.image.url }}" class="card-img-top p-2" alt="{{ product.name }}"
+                                 height="300px;">
+                        </a>
+                        <div class="card-body text-center">
+                            <div class="card-text card-brand">{{ product.brand }}</div>
+                            <div class="card-title">{{ product.name }}</div>
+                            <h4 class="card-text">Price: ${{ product.price }}</h4>
+                            <small>Free shipping</small>
+                        </div>
+                        <div class="container">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div class="ratings">
+                                    <i class="fa fa-star rating-color"></i>
+                                    <i class="fa fa-star rating-color"></i>
+                                    <i class="fa fa-star rating-color"></i>
+                                    <i class="fa fa-star rating-color"></i>
+                                    <i class="fa fa-star"></i>
+                                </div>
+                                <h5 class="review-count">12 Reviews</h5>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+<br>
+<!-- Footer -->
+<footer class="bg-dark text-center text-white">
+    <!-- Grid container -->
+    <div class="container p-4">
+        <!-- Section: Social media -->
+        <section class="mb-4">
+            <!-- Facebook -->
+            <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+            ><i class="fab fa-facebook-f"></i
+            ></a>
+            <!-- Twitter -->
+            <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+            ><i class="fab fa-twitter"></i
+            ></a>
+            <!-- Google -->
+            <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+            ><i class="fab fa-google"></i
+            ></a>
+            <!-- Instagram -->
+            <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+            ><i class="fab fa-instagram"></i
+            ></a>
+            <!-- Linkedin -->
+            <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+            ><i class="fab fa-linkedin-in"></i
+            ></a>
+            <!-- Github -->
+            <a class="btn btn-outline-light btn-floating m-1" href="#!" role="button"
+            ><i class="fab fa-github"></i
+            ></a>
+        </section>
+        <!-- Section: Social media -->
+        <!-- Section: Form -->
+        <section class="">
+            <form action="">
+                <!--Grid row-->
+                <div class="row d-flex justify-content-center">
+                    <!--Grid column-->
+                    <div class="col-auto">
+                        <p class="pt-2">
+                            <strong>Sign up for our newsletter</strong>
+                        </p>
+                    </div>
+                    <!--Grid column-->
+                    <!--Grid column-->
+                    <div class="col-md-5 col-12">
+                        <!-- Email input -->
+                        <div class="form-outline form-white mb-4">
+                            <input type="email" id="form5Example21" class="form-control"/>
+                            <label class="form-label" for="form5Example21">Email address</label>
+                        </div>
+                    </div>
+                    <!--Grid column-->
+                    <!--Grid column-->
+                    <div class="col-auto">
+                        <!-- Submit button -->
+                        <button type="submit" class="btn btn-outline-light mb-4">
+                            Subscribe
+                        </button>
+                    </div>
+                    <!--Grid column-->
+                </div>
+                <!--Grid row-->
+            </form>
+        </section>
+        <!-- Section: Form -->
+        <!-- Section: Text -->
+        <section class="mb-4">
+            <p>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Sunt distinctio earum
+                repellat quaerat voluptatibus placeat nam, commodi optio pariatur est quia magnam
+                eum harum corrupti dicta, aliquam sequi voluptate quas.
+            </p>
+        </section>
+        <!-- Section: Text -->
+        <!-- Section: Links -->
+        <section class="">
+            <!--Grid row-->
+            <div class="row">
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Links</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <a href="#!" class="text-white">Link 1</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 2</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 3</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 4</a>
+                        </li>
+                    </ul>
+                </div>
+                <!--Grid column-->
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Links</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <a href="#!" class="text-white">Link 1</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 2</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 3</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 4</a>
+                        </li>
+                    </ul>
+                </div>
+                <!--Grid column-->
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Links</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <a href="#!" class="text-white">Link 1</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 2</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 3</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 4</a>
+                        </li>
+                    </ul>
+                </div>
+                <!--Grid column-->
+                <!--Grid column-->
+                <div class="col-lg-3 col-md-6 mb-4 mb-md-0">
+                    <h5 class="text-uppercase">Links</h5>
+                    <ul class="list-unstyled mb-0">
+                        <li>
+                            <a href="#!" class="text-white">Link 1</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 2</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 3</a>
+                        </li>
+                        <li>
+                            <a href="#!" class="text-white">Link 4</a>
+                        </li>
+                    </ul>
+                </div>
+                <!--Grid column-->
+            </div>
+            <!--Grid row-->
+        </section>
+        <!-- Section: Links -->
+    </div>
+    <!-- Grid container -->
+    <!-- Copyright -->
+    <div class="text-center p-3" style="background-color: rgba(0, 0, 0, 0.2);">
+        © 2023 Copyright:
+        <a class="text-white" href="#">Goran Veljanov</a>
+    </div>
+    <!-- Copyright -->
+</footer>
+<!-- Footer -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-HwwvtgBNo3bZJJLYd8oVXjrBZt8cqVSpeBNS5n7C8IVInixGAoxmnlMuBnhbgrkm"
+        crossorigin="anonymous"></script>
+
+</body>
+</html>
